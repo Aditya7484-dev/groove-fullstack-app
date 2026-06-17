@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Groove — Music Player</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- TOPBAR -->
+  <header id="topbar">
+    <div class="logo"><i class="ti ti-vinyl" aria-hidden="true"></i> Groove</div>
+    <div id="search-wrap">
+      <i class="ti ti-search" aria-hidden="true"></i>
+      <input type="text" id="search-input" placeholder="Search songs, artists, albums...">
+    </div>
+    <div class="topbar-right">
+      <div id="user-avatar" title="Profile">G</div>
+      <span id="username-label"></span>
+      <button id="logout-btn"><i class="ti ti-logout"></i> Logout</button>
+    </div>
+  </header>
+
+  <!-- SIDEBAR -->
+  <nav id="sidebar">
+    <span class="sidebar-label">Menu</span>
+    <button class="nav-item active" data-view="home"><i class="ti ti-home" aria-hidden="true"></i> Home</button>
+    <button class="nav-item" data-view="library"><i class="ti ti-music" aria-hidden="true"></i> Library</button>
+    <button class="nav-item" data-view="liked"><i class="ti ti-heart" aria-hidden="true"></i> Liked Songs</button>
+    <button class="nav-item" data-view="upload"><i class="ti ti-upload" aria-hidden="true"></i> Upload</button>
+
+    <div class="sidebar-footer">
+      <div class="sf-label">Now playing</div>
+      <div id="sidebar-now-title">Nothing playing</div>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main id="main">
+
+    <!-- HOME VIEW -->
+    <section class="view active" id="view-home">
+      <div>
+        <div class="section-hd"><span class="section-title">Browse by genre</span></div>
+        <div class="chips" id="genre-chips">
+          <button class="chip active" data-genre="all">All</button>
+          <button class="chip" data-genre="pop">Pop</button>
+          <button class="chip" data-genre="hiphop">Hip-Hop</button>
+          <button class="chip" data-genre="jazz">Jazz</button>
+          <button class="chip" data-genre="electronic">Electronic</button>
+          <button class="chip" data-genre="rock">Rock</button>
+          <button class="chip" data-genre="classical">Classical</button>
+          <button class="chip" data-genre="other">Other</button>
+        </div>
+      </div>
+      <div>
+        <div class="section-hd"><span class="section-title">Featured</span></div>
+        <div class="cards-grid" id="featured-cards"></div>
+      </div>
+      <div>
+        <div class="section-hd">
+          <span class="section-title">All Songs</span>
+          <span class="badge badge-amber" id="song-count"></span>
+        </div>
+        <div id="main-tracklist"></div>
+      </div>
+    </section>
+
+    <!-- LIBRARY VIEW -->
+    <section class="view" id="view-library">
+      <div class="section-hd"><span class="section-title">Library</span></div>
+      <div id="library-tracklist"></div>
+    </section>
+
+    <!-- LIKED VIEW -->
+    <section class="view" id="view-liked">
+      <div class="section-hd">
+        <span class="section-title">Liked Songs</span>
+        <i class="ti ti-heart-filled text-amber" aria-hidden="true"></i>
+      </div>
+      <div id="liked-tracklist"></div>
+    </section>
+
+    <!-- UPLOAD VIEW -->
+    <section class="view" id="view-upload">
+      <div class="section-hd"><span class="section-title">Upload a Song</span></div>
+      <div id="upload-alert"></div>
+      <form class="upload-form" id="upload-form" enctype="multipart/form-data">
+        <div class="upload-row">
+          <div class="form-group">
+            <label>Song Title *</label>
+            <input type="text" id="song-title" placeholder="e.g. Midnight Blues" required>
+          </div>
+          <div class="form-group">
+            <label>Artist *</label>
+            <input type="text" id="song-artist" placeholder="e.g. Marcus Webb" required>
+          </div>
+        </div>
+        <div class="upload-row">
+          <div class="form-group">
+            <label>Album</label>
+            <input type="text" id="song-album" placeholder="e.g. Soul Kitchen">
+          </div>
+          <div class="form-group">
+            <label>Genre</label>
+            <select id="song-genre">
+              <option value="other">Other</option>
+              <option value="pop">Pop</option>
+              <option value="rock">Rock</option>
+              <option value="jazz">Jazz</option>
+              <option value="electronic">Electronic</option>
+              <option value="hiphop">Hip-Hop</option>
+              <option value="classical">Classical</option>
+            </select>
+          </div>
+        </div>
+        <input type="hidden" id="song-duration">
+
+        <div class="upload-row">
+          <div>
+            <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:8px">Audio File * (mp3, wav, ogg, flac)</label>
+            <div class="file-drop" id="audio-drop">
+              <i class="ti ti-music-bolt"></i>
+              Click or drag audio file here
+              <div class="file-chosen" id="audio-chosen"></div>
+              <input type="file" id="audio-file" accept=".mp3,.wav,.ogg,.flac,.m4a,.aac">
+            </div>
+          </div>
+          <div>
+            <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:8px">Cover Image (jpg, png) — optional</label>
+            <div class="file-drop" id="cover-drop">
+              <i class="ti ti-photo"></i>
+              Click or drag cover image here
+              <div class="file-chosen" id="cover-chosen"></div>
+              <input type="file" id="cover-file" accept=".jpg,.jpeg,.png,.webp">
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="upload-btn">
+          <i class="ti ti-upload"></i> Upload Song
+        </button>
+      </form>
+
+      <div style="margin-top:8px">
+        <div class="section-hd"><span class="section-title">My Uploads</span></div>
+        <div id="my-uploads-list"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- PLAYER BAR -->
+  <footer id="player">
+    <div id="np-section">
+      <div id="np-art"><span>🎵</span></div>
+      <div id="np-text">
+        <div id="np-title" class="ellipsis">Nothing playing</div>
+        <div id="np-artist" class="ellipsis text-dim">—</div>
+      </div>
+      <button id="np-like-btn" class="ti ti-heart" aria-label="Like song"></button>
+    </div>
+
+    <div id="controls">
+      <div id="ctrl-btns">
+        <button class="ctrl-btn" id="shuffle-btn" aria-label="Shuffle"><i class="ti ti-arrows-shuffle"></i></button>
+        <button class="ctrl-btn" id="prev-btn" aria-label="Previous"><i class="ti ti-player-skip-back"></i></button>
+        <button id="play-pause-btn" aria-label="Play/Pause"><i class="ti ti-player-play"></i></button>
+        <button class="ctrl-btn" id="next-btn" aria-label="Next"><i class="ti ti-player-skip-forward"></i></button>
+        <button class="ctrl-btn" id="repeat-btn" aria-label="Repeat"><i class="ti ti-repeat"></i></button>
+      </div>
+      <div id="progress-wrap">
+        <span class="t-label" id="cur-time">0:00</span>
+        <div id="progress-bar" role="slider" aria-label="Seek">
+          <div id="progress-fill"></div>
+          <div id="progress-thumb"></div>
+        </div>
+        <span class="t-label" id="dur-time">0:00</span>
+      </div>
+    </div>
+
+    <div id="vol-section">
+      <div class="eq-bars eq-paused" id="player-eq" aria-hidden="true">
+        <div class="eq-bar"></div><div class="eq-bar"></div>
+        <div class="eq-bar"></div><div class="eq-bar"></div>
+      </div>
+      <button id="vol-icon-btn" aria-label="Mute"><i class="ti ti-volume"></i></button>
+      <input type="range" id="vol-slider" min="0" max="100" value="80" aria-label="Volume">
+    </div>
+  </footer>
+
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/player.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>
