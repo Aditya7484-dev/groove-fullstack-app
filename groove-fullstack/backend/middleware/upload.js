@@ -1,26 +1,20 @@
 const multer = require('multer');
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
-const cloudinary = require('../config/cloudinary');
+const path = require('path');
 
-const storage = new CloudinaryStorage({
-  cloudinary,
-  params: async (req, file) => {
-    if (file.fieldname === 'audio') {
-      return {
-        folder: 'groove/songs',
-        resource_type: 'video'
-      };
-    }
-
-    return {
-      folder: 'groove/covers'
-    };
+const audioStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/songs');
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + Math.round(Math.random() * 1e9) + path.extname(file.originalname));
   }
 });
 
-module.exports = multer({
-  storage,
+const upload = multer({
+  storage: audioStorage,
   limits: {
     fileSize: 50 * 1024 * 1024
   }
 });
+
+module.exports = upload;
