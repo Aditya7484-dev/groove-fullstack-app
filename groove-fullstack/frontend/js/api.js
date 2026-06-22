@@ -34,13 +34,22 @@ function secsToStr(s) {
   return m + ':' + (r < 10 ? '0' : '') + r;
 }
 
+// function coverUrl(path) {
+//   if (!path) return null;
+//   return '/uploads/' + path;
+// }
+
 function coverUrl(path) {
   if (!path) return null;
-  return '/uploads/' + path;
+  return '/' + path.replace(/\\/g, '/');
 }
 
+// function audioUrl(path) {
+//   return '/uploads/' + path;
+// }
+
 function audioUrl(path) {
-  return '/uploads/' + path;
+  return '/' + path.replace(/\\/g, '/');
 }
 
 function genreEmoji(genre) {
